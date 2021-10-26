@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <About>
+        <Summary>$(ENV_NAME)</Summary>
+    </About>
+    <ModSettings>
+        <MsPerTick>50</MsPerTick>
+    </ModSettings>
+    <ServerSection>
+        <ServerInitialConditions>
+            <Time>
+                <StartTime>6000</StartTime>
+                <AllowPassageOfTime>false</AllowPassageOfTime>   <!-- wastrue-->
+            </Time>
+            <Weather>clear</Weather>
+            <AllowSpawning>false</AllowSpawning>
+        </ServerInitialConditions>
+        <ServerHandlers>
+            <FlatWorldGenerator generatorString="3;minecraft:bedrock,2*minecraft:dirt,minecraft:grass;1;village" forceReset="true" />
+            <DrawingDecorator>
+                <!-- Tricks to clean the map before drawing (avoid entity duplication on the map) -->
+                <!-- coordinates for cuboid are inclusive -->
+                <DrawCuboid type="air" x1="-24" x2="24" y1="4" y2="40" z1="-20" z2="20" />
+                <!-- Draw world -->
+                <DrawBlock type="log" x="0" y="4" z="4" />
+                <DrawBlock type="log" x="0" y="4" z="5" />
+                <DrawBlock type="log" x="0" y="4" z="6" />
+                <DrawBlock type="log" x="0" y="5" z="4" />
+                <DrawBlock type="log" x="0" y="6" z="4" />
+                <DrawBlock type="log" x="0" y="3" z="4" />
+            </DrawingDecorator>
+            <ServerQuitFromTimeUp description="out_of_time" timeLimitMs="1200000"/>#ServerQuitFromTimeUp timeLimitMs="300000" description="out_of_time"/>
+            <ServerQuitWhenAnyAgentFinishes />
+        </ServerHandlers>
+    </ServerSection>
+    <AgentSection mode="Survival">
+        <Name>StickAgent</Name>
+        <AgentStart>
+            <Placement z= "0" y="0" x="0"/>
+        </AgentStart>
+        <AgentHandlers>
+            <!--  Observations     -->
+            <VideoProducer want_depth="false">
+                <Width>800</Width>
+                <Height>600</Height>
+            </VideoProducer>
+              <!-- FileBasedPerformanceProducer/-->
+              <!-- ObservationFromFullInventory flat="false"/-->
+              <!-- ObservationFromFullStats/-->
+              <!-- ObservationFromEquippedItem/-->
+
+            <!--  Commands   -->
+            <HumanLevelCommands/>
+            <SimpleCraftCommands/>
+
+            <!--  Rewards   -->
+            <RewardForSendingCommand reward="-0.01"/>
+            <RewardForMissionEnd>
+                <Reward description="out_of_time" reward="-1"/>
+            </RewardForMissionEnd>
+            <RewardForCollectingItem>
+                <Item  reward="1" type="log"/>
+                <Item  reward="4" type="stick"/>
+                <Item  reward="8" type="wooden_pickaxe"/>
+            </RewardForCollectingItem>
+            <RewardForDiscardingItem>
+                <Item  reward="-1" type="log"/>
+                <Item  reward="-4" type="stick"/>
+            </RewardForDiscardingItem>
+            <AgentQuitFromCollectingItem>
+                <Item type="wooden_pickaxe" />
+            </AgentQuitFromCollectingItem>
+            <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="2000"/>
+
+        </AgentHandlers>
+    </AgentSection>
+</Mission>

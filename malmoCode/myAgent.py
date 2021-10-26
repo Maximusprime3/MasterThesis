@@ -33,7 +33,7 @@ import threading
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='malmovnv test')
-    parser.add_argument('--mission', type=str, default='missions/mobchase_single_agent.xml', help='the mission xml')
+    parser.add_argument('--mission', type=str, default='missions/sticktest.xml', help='the mission xml')
     parser.add_argument('--port', type=int, default=9000, help='the mission server port')
     parser.add_argument('--server', type=str, default='127.0.0.1', help='the mission server DNS or IP address')
     parser.add_argument('--server2', type=str, default=None, help="(Multi-agent) role N's server DNS or IP")
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         def log(message):
             print('[' + str(role) + '] ' + message)
 
-        for r in range(args.episodes):
+        for r in range(1):# range(args.episodes):
             log("reset " + str(r))
             env.reset()
 

@@ -100,7 +100,7 @@ class CustomActorCriticPolicy(ActorCriticPolicy):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='malmovnv test')
-    parser.add_argument('--mission', type=str, default='missions/findthegoal.xml', help='the mission xml')
+    parser.add_argument('--mission', type=str, default='missions/sticktest.xml', help='the mission xml')
     parser.add_argument('--port', type=int, default=9000, help='the mission server port')
     parser.add_argument('--server', type=str, default='127.0.0.1', help='the mission server DNS or IP address')
     parser.add_argument('--server2', type=str, default=None, help="(Multi-agent) role N's server DNS or IP")
@@ -150,9 +150,9 @@ if __name__ == '__main__':
         #model = DQN(CnnPolicy, vecenv, verbose=1) #SAC is best -carl
         model = PPO('CnnPolicy', vecenv, verbose=1)
         print('start train')
-        model.learn(total_timesteps=100000)
+        model.learn(total_timesteps=1000)
         print('trained')
-        model.save("PPO_CNNpolicy")
+        model.save("PPO_CNNpolicy_MyStick")
 
         safe = True
         once = True
@@ -171,6 +171,7 @@ if __name__ == '__main__':
                 if safe:
                     steps += 1
                     safe = False
+                    print('Observation', obs.shape, obs)
                     #
                     '''
                     imgobs = np.array(obs[0]).transpose(1, 0, 2)
@@ -188,7 +189,7 @@ if __name__ == '__main__':
                 #log(" obs: " + str(obs))
 
                 time.sleep(.05)
-            #obs = vecenv.reset()
+
             '''
             if once:
                 video = np.array(video)
