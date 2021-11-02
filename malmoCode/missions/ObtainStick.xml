@@ -15,7 +15,7 @@
             <Weather>clear</Weather>
             <AllowSpawning>false</AllowSpawning>
         </ServerInitialConditions>
-        <ServerHandlers>
+        <ServerHandlers> #WHY is this fucked???
             <FlatWorldGenerator generatorString="3;minecraft:bedrock,2*minecraft:dirt,minecraft:grass;1;village" forceReset="true" />
             <DrawingDecorator>
                 <!-- Tricks to clean the map before drawing (avoid entity duplication on the map) -->

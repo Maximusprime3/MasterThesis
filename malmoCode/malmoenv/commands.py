@@ -49,7 +49,7 @@ class CommandParser:
                      "hotbar.1", "hotbar.2", "hotbar.3", "hotbar.4", "hotbar.5", "hotbar.6",
                      "hotbar.7", "hotbar.8", "hotbar.9"]
     all_chat = ["chat"]
-    all_simplecraft = ["craft"]
+    all_simplecraft = ["craft stick", "craft planks"] # I changed this before it was ["craft"]
     all_mission_quit = ["quit"]
     all_human_level = ["forward", "left", "right", "jump", "sneak", "sprint", "inventory",
                        "swapHands", "drop", "use", "attack", "moveMouse",
@@ -127,11 +127,13 @@ class CommandParser:
                     raise CommandHandlerException("Invalid chat command")
                 actions.append(verb)
             elif type == 'SimpleCraft':
-                if verb != 'craft':
+                if verb[:5] != 'craft': # Ichanged this before it was      if verb != 'craft'
                     raise CommandHandlerException("Invalid craft command")
                 actions.append(verb)
             elif type == 'AbsoluteMovement' or 'Inventory':
                 actions.append(verb)
+
+        print('all actions:',actions)
         return actions
 
     def _command_hander(self, handlers, turnbased, commands):

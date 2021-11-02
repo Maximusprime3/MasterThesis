@@ -25,6 +25,7 @@ import time
 from lxml import etree
 from threading import Thread
 from PIL import Image
+import numpy as np
 
 import threading
 
@@ -60,10 +61,15 @@ if __name__ == '__main__':
                  server2=args.server2, port2=(args.port + role),
                  role=role,
                  exp_uid=args.experimentUniqueId,
-                 episode=args.episode, resync=args.resync)
+                 episode=args.episode, resync=args.resync,
+                 action_filter=[])
+        print('action space', env.action_space)
 
         def log(message):
             print('[' + str(role) + '] ' + message)
+
+        obs, reward, done, info = env.step(env.action_space.sample())
+        print('info', info)
 
         for r in range(1):# range(args.episodes):
             log("reset " + str(r))
@@ -74,14 +80,15 @@ if __name__ == '__main__':
             while not done:
                 action = env.action_space.sample()
                 log("action: " + str(action))
-                obs, reward, done, info = env.step(action)
+                obs, reward, done, info = env.step(6)
+                print('info',info)
                 if safe:
                     steps += 1
                     safe = False
                     #h, w, d = env.observation_space.shape
                     #img = Image.fromarray(obs.reshape(h, w, d))
-                    img = Image.fromarray(obs)
-                    img.save('TESTimage.png')
+                    #img = Image.fromarray(np.array(obs))
+                    #img.save('TESTimage.png')
                     #obss = pd.DataFrame([obs, reward, done, info])
                     #obss.to_csv("observations")
 
@@ -90,10 +97,10 @@ if __name__ == '__main__':
                 log("reward: " + str(reward))
                 # log("done: " + str(done))
                 # log("info: " + str(info))
-                log(" obs: " + str(obs))
+                #log(" obs: " + str(obs))
 
                 time.sleep(.05)
-
+                #break bb = info['info']['info']
         env.close()
 
     threads = [Thread(target=run, args=(i,)) for i in range(number_of_agents)]

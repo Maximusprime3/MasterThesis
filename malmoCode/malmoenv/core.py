@@ -129,12 +129,13 @@ class Env:
         self.turn_key = ""
         self.exp_uid = ""
         self.done = True
+        self.episode_len = 0
         self.step_options = None
         self.width = 0
         self.height = 0
         self.depth = 0
         self.metadata = {}
-        self.episode_len = 0
+
 
     def init(self, xml, port, server=None,
              server2=None, port2=None,
@@ -153,6 +154,8 @@ class Env:
             step_options - encodes withTurnKey and withInfo in step messages. Defaults to info included,
             turn if required.
         """
+        self.episode_len = 0 #I did this to restart the count
+
         if action_filter is None:
             action_filter = {"move", "turn", "use", "attack"}
 
@@ -172,7 +175,7 @@ class Env:
         command_parser = CommandParser(action_filter)
         commands = command_parser.get_commands_from_xml(self.xml, self.role)
         actions = command_parser.get_actions(commands)
-        # print("role " + str(self.role) + " actions " + str(actions)
+        #print("role ", str(self.role), " actions ", str(actions))
 
         if action_space:
             self.action_space = action_space
@@ -268,7 +271,7 @@ class Env:
     @retry
     def _start_up(self):
         self.resets += 1
-        self.episode_len = 0 #need to reset this too
+        self.episode_len = 0 #need to reset this too I DId this
         if self.role != 0:
             self._find_server()
         if not self.client_socket:
@@ -298,6 +301,7 @@ class Env:
                 time.sleep(0.1)
 
             obs = np.frombuffer(obs, dtype=np.uint8) + 127  # bc pixel space changed from -128,127 to 0,255
+        #print('obs1', obs.shape, len(obs), obs)
 
         if obs is None or len(obs) == 0:
             obs = np.zeros((self.height, self.width, self.depth), dtype=np.uint8)
@@ -362,9 +366,12 @@ class Env:
         h, w, d = self.height, self.width, 3
         if obs is None or obs.size == 0:
             obs = np.zeros(h*w*d)
+        #print('obs', obs.shape, len(obs), obs)
         obs = obs + 127  # bc pixel space changed from -128,127 to 0,255 n
-        obs = obs.reshape(h, w, d)
-        return obs, reward, self.done, {"info": info, "episode": {"r": reward, "l":self.episode_len} } #need r and l as keys
+        obs = obs.reshape(h, w, d) #info holds the non pixel obs returning that is useful
+        #return obs, reward, done, info --> info['info'] holds other observations than pixel obs
+
+        return obs, reward, self.done, {"info": info, "episode": {"r": reward, "l":self.episode_len} } #I did this # need r and l as keys
 
     def close(self):
         """gym api close"""

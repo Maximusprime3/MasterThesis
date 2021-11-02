@@ -3,7 +3,7 @@
          <Summary>Catch the Stick</Summary>
       </About>
       <ModSettings>
-         <MsPerTick>50</MsPerTick>
+         <MsPerTick>30</MsPerTick>
       </ModSettings>
       <ServerSection>
          <ServerInitialConditions>
@@ -21,12 +21,12 @@
                 <!-- coordinates for cuboid are inclusive -->
                 <DrawCuboid type="air" x1="-24" x2="24" y1="4" y2="40" z1="-20" z2="20" />
                 <!-- Draw world -->
-                <DrawBlock type="log" x="0" y="4" z="4" />
-                <DrawBlock type="log" x="0" y="4" z="5" />
-                <DrawBlock type="log" x="0" y="4" z="6" />
-                <DrawBlock type="log" x="0" y="5" z="4" />
-                <DrawBlock type="log" x="0" y="6" z="4" />
-                <DrawBlock type="log" x="0" y="3" z="4" />
+                <DrawBlock type="planks" x="0" y="4" z="4" />
+                <DrawBlock type="planks" x="0" y="4" z="5" />
+                <DrawBlock type="planks" x="0" y="4" z="6" />
+                <DrawBlock type="planks" x="0" y="5" z="4" />
+                <DrawBlock type="planks" x="0" y="6" z="4" />
+                <DrawBlock type="planks" x="0" y="3" z="4" />
             </DrawingDecorator>
             <ServerQuitFromTimeUp description="out_of_time" timeLimitMs="1000000" />
             <ServerQuitWhenAnyAgentFinishes />
@@ -36,12 +36,35 @@
          <Name>myAgent</Name>
          <AgentStart>
             <Placement pitch="30" x="4.5" y="4" yaw="270" z="2.5" />
+             <Inventory>
+				<InventoryBlock quantity="1" slot="11" type="cobblestone"/>
+                 <InventoryBlock quantity="10" slot="10" type="cobblestone"/>
+			</Inventory>
          </AgentStart>
          <AgentHandlers>
 
              <!--  Commands   -->
-            <DiscreteMovementCommands/>
+            <DiscreteMovementCommands>
+                <ModifierList type="allow-list">
+                    <command>move</command>
+                    <command>turn</command>
+                    <command>attack</command>
+                    <!--command>jump</command-->
+                </ModifierList>
+            </DiscreteMovementCommands>
+            <!--InventoryCommands/ -->
+
             <SimpleCraftCommands/>
+            <!--<SimpleCraftCommands>
+                <ModifierList type="allow-list">
+                    <command>craft stone_pickaxe</command>
+                    <command>craft stick</command>
+                    <command>craft planks</command>
+                </ModifierList>
+            </SimpleCraftCommands>-->
+
+
+
 
             <!--Observations-->
             <ObservationFromGrid>
@@ -59,21 +82,25 @@
             </VideoProducer>
 
              <!--  Rewards   -->
-            <RewardForSendingCommand reward="-0.01" />
-            <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="1000" />
-            <RewardForMissionEnd>
-                <Reward description="out_of_time" reward="-1"/>
+            <RewardForSendingCommand reward="-1" />
+            <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="250" />
+            <RewardForMissionEnd rewardForDeath="-100">
+                <Reward description="out_of_time" reward="-100"/>
             </RewardForMissionEnd>
             <RewardForCollectingItem>
-                <Item  reward="1" type="log"/>
-                <Item  reward="10" type="stick"/>
+                <Item  reward="10" type="log"/>
+                <Item  reward="100" type="planks"/>
+                <Item  reward="1000" type="stick"/>
+
+                <Item type="stone_pickaxe" reward="10000"/>
             </RewardForCollectingItem>
             <RewardForDiscardingItem>
                 <Item  reward="-1" type="log"/>
-                <Item  reward="-4" type="stick"/>
+                <Item  reward="-10" type="planks"/>
+                <Item  reward="-40" type="stick"/>
             </RewardForDiscardingItem>
             <AgentQuitFromCollectingItem>
-                <Item type="stick" />
+                <Item type="stick"/>
             </AgentQuitFromCollectingItem>
 
 

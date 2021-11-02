@@ -22,6 +22,10 @@ from torch import nn
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.dqn import CnnPolicy
 
+#To start minecraft use
+    # python -c "import malmoenv.bootstrap; malmoenv.bootstrap.launch_minecraft(9000)"
+#To start a script with minecraft use another terminal navigate to malmoplatform/malmoenv and use
+    # python BaseLinesTest.py
 
 #This a custom policy for stable baselines3
 class CustomNetwork(nn.Module):
@@ -109,6 +113,7 @@ if __name__ == '__main__':
     parser.add_argument('--episode', type=int, default=0, help='the start episode - default is 0')
     parser.add_argument('--resync', type=int, default=0, help='exit and re-sync on every N - default 0 meaning never')
     parser.add_argument('--experimentUniqueId', type=str, default='test1', help="the experiment's unique id.")
+
     args = parser.parse_args()
     if args.server2 is None:
         args.server2 = args.server
@@ -119,15 +124,18 @@ if __name__ == '__main__':
     number_of_agents = len(mission.findall('{http://ProjectMalmo.microsoft.com}AgentSection'))
     print("number of agents: " + str(number_of_agents))
     print('mission loaded')
+    action_filter = []
 
     def run(role):
+        print('role', role)
         env = malmoenv.make()
         env.init(xml,
                  args.port, server=args.server,
                  server2=args.server2, port2=(args.port + role),
                  role=role,
                  exp_uid=args.experimentUniqueId,
-                 episode=args.episode, resync=args.resync)
+                 episode=args.episode, resync=args.resync,
+                 action_filter=action_filter)
 
         def makeEnv():
             menv = malmoenv.make()
@@ -136,7 +144,8 @@ if __name__ == '__main__':
                      server2=args.server2, port2=(args.port + role),
                      role=role,
                      exp_uid=args.experimentUniqueId,
-                     episode=args.episode, resync=args.resync)
+                     episode=args.episode, resync=args.resync,
+                     action_filter=action_filter)
             return menv
 
         def log(message):
@@ -147,10 +156,20 @@ if __name__ == '__main__':
         #print('check env')
         #check_env(vecenv)
         print('make model')
+        j=0
+        actionss =[]
+        while j < 10000:
+            actionss.append(env.action_space.sample())
+            j+=1
+
+        print('actions', env.action_space, np.unique(np.array(actionss)))
+        obs1, r, do, inf = env.step(env.action_space.sample())
+        print('Observation1', inf)
+        #d=action_space.sample(1000)
         #model = DQN(CnnPolicy, vecenv, verbose=1) #SAC is best -carl
         model = PPO('CnnPolicy', vecenv, verbose=1)
         print('start train')
-        model.learn(total_timesteps=1000)
+        model.learn(total_timesteps=10000)
         print('trained')
         model.save("PPO_CNNpolicy_MyStick")
 
@@ -172,6 +191,7 @@ if __name__ == '__main__':
                     steps += 1
                     safe = False
                     print('Observation', obs.shape, obs)
+
                     #
                     '''
                     imgobs = np.array(obs[0]).transpose(1, 0, 2)
@@ -183,7 +203,7 @@ if __name__ == '__main__':
                     #obss = pd.DataFrame([obs, reward, done, info])
                     #obss.to_csv("observations")
                     '''
-                #log("reward: " + str(reward))
+                log("reward: " + str(reward))
                 # log("done: " + str(done))
                 # log("info: " + str(info))
                 #log(" obs: " + str(obs))
@@ -202,6 +222,9 @@ if __name__ == '__main__':
 
     [t.start() for t in threads]
     [t.join() for t in threads]
+
+
+
 
 
 
