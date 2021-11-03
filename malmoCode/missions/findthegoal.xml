@@ -54,12 +54,24 @@
     <AgentStart>
       <Placement x="-203.5" y="81.0" z="217.5"/>
     </AgentStart>
+
     <AgentHandlers>
       <VideoProducer want_depth="false">
-        <Width>64</Width>
-        <Height>64</Height>
+        <Width>800</Width>
+        <Height>600</Height>
       </VideoProducer>
+
+      <!--Observations-->
+      <ObservationFromGrid>
+        <Grid absoluteCoords="false" name="sourroundings">
+          <min x="-2" y="-2" z="-2" />
+          <max x="2" y="2" z="2" />
+        </Grid>
+      </ObservationFromGrid>
       <ObservationFromFullStats />
+      <ObservationFromFullInventory />
+
+      <!--commands-->
       <ContinuousMovementCommands turnSpeedDegs="180">
         <ModifierList type="allow-list">
           <command>move</command>
@@ -67,6 +79,8 @@
         </ModifierList>
       </ContinuousMovementCommands>
       <MissionQuitCommands/>
+
+      <!--rewards-->
       <RewardForSendingCommand reward="-0.01" />
       <RewardForMissionEnd rewardForDeath="-1">
         <Reward description="found_goal" reward="0.5" />
@@ -75,10 +89,12 @@
       <RewardForTouchingBlockType>
         <Block type="gold_ore diamond_ore redstone_ore" reward="0.5" />
       </RewardForTouchingBlockType>
+
+      <!--misson end-->
       <AgentQuitFromTouchingBlockType>
         <Block type="gold_block diamond_block redstone_block" description="found_goal" />
       </AgentQuitFromTouchingBlockType>
-      <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="1000"/>
+      <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="250"/>
     </AgentHandlers>
   </AgentSection>
 </Mission>

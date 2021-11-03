@@ -119,7 +119,9 @@ class CommandParser:
                 else:
                     actions.append(verb)
             elif type == 'MissionQuit':
+                print('error', verb)
                 if verb != 'quit':
+
                     raise CommandHandlerException("Invalid quit command")
                 actions.append(verb)
             elif type == 'Chat':

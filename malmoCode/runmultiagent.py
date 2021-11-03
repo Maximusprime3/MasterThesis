@@ -23,6 +23,7 @@ from pathlib import Path
 import time
 from lxml import etree
 from threading import Thread
+import numpy as np
 import threading
 
 if __name__ == '__main__':
@@ -70,8 +71,8 @@ if __name__ == '__main__':
                 obs, reward, done, info = env.step(action)
                 log("reward: " + str(reward))
                 # log("done: " + str(done))
-                # log("info: " + str(info))
-                log(" obs: " + str(obs))
+                log("info: " + str(info))
+                log(" obs shape: " +  str(np.array(obs).shape))
 
                 time.sleep(.05)
 

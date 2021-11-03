@@ -21,6 +21,7 @@ import torch as th
 from torch import nn
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.dqn import CnnPolicy
+import imageio
 
 #To start minecraft use
     # python -c "import malmoenv.bootstrap; malmoenv.bootstrap.launch_minecraft(9000)"
@@ -104,7 +105,7 @@ class CustomActorCriticPolicy(ActorCriticPolicy):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='malmovnv test')
-    parser.add_argument('--mission', type=str, default='missions/sticktest.xml', help='the mission xml')
+    parser.add_argument('--mission', type=str, default='missions/findthegoal.xml', help='the mission xml')
     parser.add_argument('--port', type=int, default=9000, help='the mission server port')
     parser.add_argument('--server', type=str, default='127.0.0.1', help='the mission server DNS or IP address')
     parser.add_argument('--server2', type=str, default=None, help="(Multi-agent) role N's server DNS or IP")
@@ -135,7 +136,7 @@ if __name__ == '__main__':
                  role=role,
                  exp_uid=args.experimentUniqueId,
                  episode=args.episode, resync=args.resync,
-                 action_filter=action_filter)
+)
 
         def makeEnv():
             menv = malmoenv.make()
@@ -145,7 +146,7 @@ if __name__ == '__main__':
                      role=role,
                      exp_uid=args.experimentUniqueId,
                      episode=args.episode, resync=args.resync,
-                     action_filter=action_filter)
+)
             return menv
 
         def log(message):
@@ -164,15 +165,13 @@ if __name__ == '__main__':
 
         print('actions', env.action_space, np.unique(np.array(actionss)))
         obs1, r, do, inf = env.step(env.action_space.sample())
-        print('Observation1', inf)
+        print('Observation info', inf)
         #d=action_space.sample(1000)
         #model = DQN(CnnPolicy, vecenv, verbose=1) #SAC is best -carl
+        model_name = "PPO_CNNpolicy"
+        model = PPO.load(model_name)
+        print('model loaded')
 
-        model = PPO('CnnPolicy', vecenv, verbose=1)
-        print('start train')
-        model.learn(total_timesteps=10000)
-        print('trained')
-        model.save("PPO_CNNpolicy_MyStick")
 
         safe = True
         once = True
@@ -188,6 +187,7 @@ if __name__ == '__main__':
                 action, _state = model.predict(obs, deterministic=True)
                 log("action: " + str(action))
                 obs, reward, done, info = vecenv.step(action)
+                video.append(obs)
                 if safe:
                     steps += 1
                     safe = False
@@ -211,25 +211,34 @@ if __name__ == '__main__':
 
                 time.sleep(.05)
 
-            '''
-            if once:
-                video = np.array(video)
-                print('VIDEOSHAPE', video.shape())
-                once = False
-            '''
+        video = np.array(video)
+        vid = []
+        for img in video:
+            img = np.flip(img - 127)
+            vid.append(img)
+        vid = np.array(vid)
+        print('videoshape', vid.shape, vid.squeeze().shape)
+        imageio.mimwrite('videos/'+model_name+'_video.mp4', vid.squeeze(), fps=float(20))
+        '''
+        frameSize = np.array(video[0].shape[1:3])
+        print('VIDEOSHAPE', frameSize)
+        frameSize[[0, 1]] = frameSize[[1, 0]]
+        vid = cv2.VideoWriter('videos/'+model_name+'_video.mp4', cv2.VideoWriter_fourcc(*'DIB '), float(30), frameSize)
+        print('frame', video[0].shape)
+        for frame in video:
+            img = np.squeeze(frame)
+            print('img',img.shape, img.dtype)
+            vid.write(img)
+        vid.release()
+        print('VIDEOSHAPE', frameSize)
+        '''
         vecenv.close()
+
 
     threads = [Thread(target=run, args=(i,)) for i in range(number_of_agents)]
 
     [t.start() for t in threads]
     [t.join() for t in threads]
-
-
-
-
-
-
-
 
 
 
