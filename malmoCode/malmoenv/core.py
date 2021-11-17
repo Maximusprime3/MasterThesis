@@ -114,6 +114,7 @@ class Env:
     def __init__(self):
         self.action_space = None
         self.observation_space = None
+        self.grid_obs = False # I did this to use the grid world observatins provided in info
         self.xml = None
         self.integratedServerPort = 0
         self.role = 0
@@ -140,7 +141,7 @@ class Env:
     def init(self, xml, port, server=None,
              server2=None, port2=None,
              role=0, exp_uid=None, episode=0,
-             action_filter=None, resync=0, step_options=0, action_space=None, metadata={}):
+             action_filter=None, resync=0, step_options=0, action_space=None, grid_obs=False, metadata={}):
         """"Initialize a Malmo environment.
             xml - the mission xml.
             port - the MalmoEnv service's port.
@@ -154,7 +155,8 @@ class Env:
             step_options - encodes withTurnKey and withInfo in step messages. Defaults to info included,
             turn if required.
         """
-        self.episode_len = 0 #I did this to restart the count
+        self.episode_len = 0 #I did this to restart the count, doesnt realy work with sb3 tho
+        self.grid_obs = grid_obs
 
         if action_filter is None:
             action_filter = {"move", "turn", "use", "attack"}
@@ -286,12 +288,16 @@ class Env:
     def _peek_obs(self):
         obs = None
         start_time = time.time()
+        print('PEEEEK')
         while not self.done and (obs is None or len(obs) == 0):
             peek_message = "<Peek/>"
             comms.send_message(self.client_socket, peek_message.encode())
             obs = comms.recv_message(self.client_socket)
             reply = comms.recv_message(self.client_socket)
             done, = struct.unpack('!b', reply)
+            #if self.grid_obs: #I did this to include info grid obs
+                #info = comms.recv_message(self.client_socket).decode('utf-8')
+                #print('INFO MSSG', info)
             self.done = done == 1
             if obs is None or len(obs) == 0:
                 if time.time() - start_time > MAX_WAIT:
@@ -300,14 +306,18 @@ class Env:
                     raise MissionInitException('too long waiting for first observation')
                 time.sleep(0.1)
 
-            obs = np.frombuffer(obs, dtype=np.uint8) + 127  # bc pixel space changed from -128,127 to 0,255
-        #print('obs1', obs.shape, len(obs), obs)
 
+        #I DID THIS
+        #if self.grid_obs: #change to grid obs
+            #obs = info
+        #else:
         if obs is None or len(obs) == 0:
             obs = np.zeros((self.height, self.width, self.depth), dtype=np.uint8)
-        #I DID THIS
+        obs = np.frombuffer(obs, dtype=np.uint8) + 127  # bc pixel space changed from -128,127 to 0,255
         h, w, d = self.height, self.width, 3
         obs = obs.reshape(h, w, d)
+            #print('OBS2', obs.shape, obs)
+
         return obs
 
     def _quit_episode(self):
@@ -361,15 +371,22 @@ class Env:
 
             if (obs is None or len(obs) == 0) or turn:
                 time.sleep(0.1)
-            obs = np.frombuffer(obs, dtype=np.uint8)
+
         #I Did this
-        h, w, d = self.height, self.width, 3
-        if obs is None or obs.size == 0:
-            obs = np.zeros(h*w*d)
-        #print('obs', obs.shape, len(obs), obs)
-        obs = obs + 127  # bc pixel space changed from -128,127 to 0,255 n
-        obs = obs.reshape(h, w, d) #info holds the non pixel obs returning that is useful
-        #return obs, reward, done, info --> info['info'] holds other observations than pixel obs
+        if self.grid_obs: #change to grid obs I did this
+            obs = info
+            #print('INFO MSSG', info)
+        else:
+            #print('OBBBBB',obs)
+            obs = np.frombuffer(obs, dtype=np.uint8)
+            h, w, d = self.height, self.width, 3
+            if obs is None or obs.size == 0:
+                obs = np.zeros(h*w*d)
+
+            obs = obs + 127  # bc pixel space changed from -128,127 to 0,255 n
+            obs = obs.reshape(h, w, d) #info holds the non pixel obs returning that is useful
+            #return obs, reward, done, info --> info['info'] holds other observations than pixel obs
+            #print('obs', obs.shape, len(obs), obs)
 
         return obs, reward, self.done, {"info": info, "episode": {"r": reward, "l":self.episode_len} } #I did this # need r and l as keys
 

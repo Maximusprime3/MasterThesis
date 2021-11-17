@@ -62,7 +62,7 @@ if __name__ == '__main__':
                  role=role,
                  exp_uid=args.experimentUniqueId,
                  episode=args.episode, resync=args.resync,
-                 action_filter=[])
+                 action_filter=[], grid_obs=True)
         print('action space', env.action_space)
 
         def log(message):
@@ -80,8 +80,9 @@ if __name__ == '__main__':
             while not done:
                 action = env.action_space.sample()
                 log("action: " + str(action))
-                obs, reward, done, info = env.step(6)
+                obs, reward, done, info = env.step(action)
                 print('info',info)
+                print('obs', obs)
                 if safe:
                     steps += 1
                     safe = False

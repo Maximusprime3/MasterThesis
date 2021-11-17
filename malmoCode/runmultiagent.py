@@ -55,7 +55,7 @@ if __name__ == '__main__':
                  server2=args.server2, port2=(args.port + role),
                  role=role,
                  exp_uid=args.experimentUniqueId,
-                 episode=args.episode, resync=args.resync)
+                 episode=args.episode, resync=args.resync, grid_obs=False)
 
         def log(message):
             print('[' + str(role) + '] ' + message)
@@ -72,7 +72,8 @@ if __name__ == '__main__':
                 log("reward: " + str(reward))
                 # log("done: " + str(done))
                 log("info: " + str(info))
-                log(" obs shape: " +  str(np.array(obs).shape))
+                log("obs: "+ str(obs))
+                #log(" obs shape: " +  str(np.array(obs).shape))
 
                 time.sleep(.05)
 

@@ -125,6 +125,7 @@ if __name__ == '__main__':
     print("number of agents: " + str(number_of_agents))
     print('mission loaded')
     action_filter = []
+    grid_obs = True
 
     def run(role):
         print('role', role)
@@ -135,7 +136,7 @@ if __name__ == '__main__':
                  role=role,
                  exp_uid=args.experimentUniqueId,
                  episode=args.episode, resync=args.resync,
-                 action_filter=action_filter)
+                 action_filter=action_filter, grid_obs=grid_obs)
 
         def makeEnv():
             menv = malmoenv.make()
@@ -145,7 +146,7 @@ if __name__ == '__main__':
                      role=role,
                      exp_uid=args.experimentUniqueId,
                      episode=args.episode, resync=args.resync,
-                     action_filter=action_filter)
+                     action_filter=action_filter, grid_obs=grid_obs)
             return menv
 
         def log(message):
@@ -168,9 +169,10 @@ if __name__ == '__main__':
         #d=action_space.sample(1000)
         #model = DQN(CnnPolicy, vecenv, verbose=1) #SAC is best -carl
 
-        model = PPO('CnnPolicy', vecenv, verbose=1)
+        #model = PPO('CnnPolicy', vecenv, verbose=1)
+        model = PPO("MultiInputPolicy", env, verbose=1)
         print('start train')
-        model.learn(total_timesteps=10000)
+        model.learn(total_timesteps=100)
         print('trained')
         model.save("PPO_CNNpolicy_MyStick")
 

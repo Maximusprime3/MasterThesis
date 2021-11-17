@@ -57,8 +57,8 @@
 
     <AgentHandlers>
       <VideoProducer want_depth="false">
-        <Width>800</Width>
-        <Height>600</Height>
+        <Width>64</Width>
+        <Height>64</Height>
       </VideoProducer>
 
       <!--Observations-->
