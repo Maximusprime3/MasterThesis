@@ -65,3 +65,9 @@ https://www.google.com/search?q=TRPO&oq=TRPO&aqs=chrome..69i57j46i10i175i199i433
 
 Target driven visual navigation in indoor scenes using deep rl
 https://ieeexplore.ieee.org/abstract/document/7989381?casa_token=GQRrhhC0SkAAAAAA:v-DvmJM5pw759AhrkNk7NLGXiaRH8IjbLI-XkIf39LzZsblrT3NuJKA1YZzsXVsCUdDFaoumIXQ
+
+
+Unten auf der seite Nvidia GAMEGAN
+ It's the first neural network model that mimics a computer game engine 
+by harnessing generative adversarial networks, or GANs.
+https://www.nvidia.com/en-us/research/ai-demos/
