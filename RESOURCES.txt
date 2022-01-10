@@ -1,0 +1,67 @@
+Links
+
+MalmoEnvBoss
+https://github.com/microsoft/malmo/tree/master/MalmoEnv
+
+
+sb3
+https://github.com/DLR-RM/stable-baselines3
+sb3 doc
+https://stable-baselines3.readthedocs.io/en/master/guide/quickstart.html
+https://stable-baselines3.readthedocs.io/_/downloads/en/master/pdf/
+gym wrappers
+https://colab.research.google.com/github/araffin/rl-tutorial-jnrr19/blob/master/2_gym_wrappers_saving_loading.ipynb#scrollTo=zuIcbfv3g9dd
+
+dict spaces
+https://colab.research.google.com/drive/13_jI8YLk9ATRQSd7_3rV5rOsll7jsSz0#scrollTo=wK9dgtBNPIDJ
+
+malmo dict spaces
+https://github.com/microsoft/malmo/issues/885
+
+mineRL
+https://github.com/minerllabs/minerl/tree/dev/minerl/herobraine/env_specs/test
+mineRL starter kit
+https://github.com/minerllabs/competition_submission_template
+minerRL BC
+https://colab.research.google.com/drive/1d83YcMmQLKEUxC4Qt7v1Dl3rGNYx-KM2
+
+
+AtariHEAD atari human eyetracking and emo data
+https://ojs.aaai.org/index.php/AAAI/article/view/6161
+
+
+
+
+Literatur
+
+malmoplatform paper
+https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.1045.1281&rep=rep1&type=pdf
+
+nature papa
+https://www.nature.com/articles/nature14236?wm=book_wap_0005
+
+Deep RL brief survey
+https://ieeexplore.ieee.org/abstract/document/8103164?casa_token=qmiLkUHVjAsAAAAA:uSRnN2VY-cbiTVRlt2gOfEK2zwcxkR0TyVYouMbyftClTJk3eC4LAjDRi1Otg03lQbXv8ELhNis
+
+GAN,invRL,Energy model
+https://arxiv.org/pdf/1611.03852.pdf
+
+Learingn robust rewards with adversarial inv RL
+https://arxiv.org/pdf/1710.11248.pdf
+
+Malmo pubs
+https://www.microsoft.com/en-us/research/project/project-malmo/publications/
+mineRL challenge
+https://crossminds.ai/video/introduction-and-results-of-the-2020-minerl-competition-606fdfb5f43a7f2f827bfc23/
+https://www.aicrowd.com/challenges/neurips-2021-minerl-diamond-competition
+mineRL peps
+https://minerl.readthedocs.io/en/latest/notes/useful-links.html
+mineRL 2019 analysis
+http://proceedings.mlr.press/v123/milani20a.html
+https://ui.adsabs.harvard.edu/abs/2019arXiv190410079G/abstract
+
+Trust region plicy optimization?
+https://www.google.com/search?q=TRPO&oq=TRPO&aqs=chrome..69i57j46i10i175i199i433j0i10i512l4j46i10i175i199j46i10i512j0i10i512.1360j0j7&sourceid=chrome&ie=UTF-8
+
+Target driven visual navigation in indoor scenes using deep rl
+https://ieeexplore.ieee.org/abstract/document/7989381?casa_token=GQRrhhC0SkAAAAAA:v-DvmJM5pw759AhrkNk7NLGXiaRH8IjbLI-XkIf39LzZsblrT3NuJKA1YZzsXVsCUdDFaoumIXQ
